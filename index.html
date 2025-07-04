@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>동물 분류 계통</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN (for ChevronDown, ChevronRight) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom styles for background image and overlay */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+        .bg-image-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem; /* p-6 */
+            background-image: url('image_ee1ac0.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background-color: black;
+            opacity: 0.5;
+            z-index: 0;
+        }
+        /* Ensure content is above the overlay */
+        header, main, footer {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-image-container">
+        <div class="overlay"></div>
+
+        <header class="w-full max-w-4xl text-center mb-8">
+            <h1 class="text-5xl font-extrabold text-white mb-4 drop-shadow-lg">
+                동물 분류 계통
+            </h1>
+            <p class="text-lg text-gray-200">
+                생물의 다양성을 이해하기 위한 계층적 분류 체계입니다. 각 단계를 클릭하여 자세히 알아보세요.
+            </p>
+        </header>
+
+        <main id="main-content" class="w-full max-w-4xl bg-gray-800 bg-opacity-75 p-8 rounded-xl shadow-2xl border border-green-700">
+            <!-- Classification items will be rendered here by JavaScript -->
+        </main>
+
+        <footer class="mt-10 text-gray-300 text-sm">
+            <p>&copy; 2025 동물 분류 웹사이트. 모든 권리 보유.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Data structure for animal classification
+        const animalClassification = [
+            {
+                name: '계 (Kingdom)',
+                value: '동물계 (Animalia)',
+                children: [
+                    {
+                        name: '문 (Phylum)',
+                        value: '척삭동물문 (Chordata)', // Chordates - Vertebrates and closely related invertebrates
+                        children: [
+                            {
+                                name: '강 (Class)',
+                                value: '포유강 (Mammalia)', // Mammals
+                                children: [
+                                    {
+                                        name: '목 (Order)',
+                                        value: '영장목 (Primates)', // Primates
+                                        children: [
+                                            {
+                                                name: '과 (Family)',
+                                                value: '사람과 (Hominidae)', // Hominids (Great Apes)
+                                                children: [
+                                                    { name: '속 (Genus)', value: '사람속 (Homo)', children: [{ name: '종 (Species)', value: '사람 (Homo sapiens)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '침팬지속 (Pan)', children: [{ name: '종 (Species)', value: '침팬지 (Pan troglodytes)', children: [] }, { name: '종 (Species)', value: '보노보 (Pan paniscus)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '오랑우탄속 (Pongo)', children: [{ name: '종 (Species)', value: '보르네오오랑우탄 (Pongo pygmaeus)', children: [] }, { name: '종 (Species)', value: '수마트라오랑우탄 (Pongo abelii)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '고릴라속 (Gorilla)', children: [{ name: '종 (Species)', value: '서부고릴라 (Gorilla gorilla)', children: [] }] }
+                                                ]
+                                            },
+                                            {
+                                                name: '과 (Family)',
+                                                value: '긴팔원숭이과 (Hylobatidae)', // Gibbons
+                                                children: [
+                                                    { name: '속 (Genus)', value: '긴팔원숭이속 (Hylobates)', children: [{ name: '종 (Species)', value: '흰손긴팔원숭이 (Hylobates lar)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '샴망속 (Symphalangus)', children: [{ name: '종 (Species)', value: '샴망 (Symphalangus syndactylus)', children: [] }] }
+                                                ]
+                                            },
+                                            {
+                                                name: '과 (Family)',
+                                                value: '꼬리감는원숭이과 (Cebidae)', // New World Monkeys
+                                                children: [
+                                                    { name: '속 (Genus)', value: '카푸친속 (Cebus)', children: [{ name: '종 (Species)', value: '카푸친원숭이 (Cebus capucinus)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '거미원숭이속 (Ateles)', children: [{ name: '종 (Species)', value: '검은머리거미원숭이 (Ateles paniscus)', children: [] }] }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '식육목 (Carnivora)', // Carnivores
+                                        children: [
+                                            {
+                                                name: '과 (Family)',
+                                                value: '개과 (Canidae)', // Canids (Dogs, Wolves, Foxes)
+                                                children: [
+                                                    { name: '속 (Genus)', value: '개속 (Canis)', children: [{ name: '종 (Species)', value: '늑대 (Canis lupus)', children: [] }, { name: '종 (Species)', value: '개 (Canis familiaris)', children: [] }, { name: '종 (Species)', value: '코요테 (Canis latrans)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '여우속 (Vulpes)', children: [{ name: '종 (Species)', value: '붉은여우 (Vulpes vulpes)', children: [] }, { name: '종 (Species)', value: '북극여우 (Vulpes lagopus)', children: [] }] }
+                                                ]
+                                            },
+                                            {
+                                                name: '과 (Family)',
+                                                value: '고양이과 (Felidae)', // Felids (Cats)
+                                                children: [
+                                                    { name: '속 (Genus)', value: '고양이속 (Felis)', children: [{ name: '종 (Species)', value: '집고양이 (Felis catus)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '표범속 (Panthera)', children: [{ name: '종 (Species)', value: '사자 (Panthera leo)', children: [] }, { name: '종 (Species)', value: '호랑이 (Panthera tigris)', children: [] }, { name: '종 (Species)', value: '표범 (Panthera pardus)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '치타속 (Acinonyx)', children: [{ name: '종 (Species)', value: '치타 (Acinonyx jubatus)', children: [] }] }
+                                                ]
+                                            },
+                                            {
+                                                name: '과 (Family)',
+                                                value: '곰과 (Ursidae)', // Bears
+                                                children: [
+                                                    { name: '속 (Genus)', value: '곰속 (Ursus)', children: [{ name: '종 (Species)', value: '불곰 (Ursus arctos)', children: [] }, { name: '종 (Species)', value: '북극곰 (Ursus maritimus)', children: [] }, { name: '종 (Species)', value: '아메리카흑곰 (Ursus americanus)', children: [] }] }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '경우제목 (Cetacea)', // Cetaceans (Whales, Dolphins)
+                                        children: [
+                                            {
+                                                name: '과 (Family)',
+                                                value: '참고래과 (Balaenidae)', // Right Whales
+                                                children: [
+                                                    { name: '속 (Genus)', value: '참고래속 (Balaena)', children: [{ name: '종 (Species)', value: '북극고래 (Balaena mysticetus)', children: [] }] }
+                                                ]
+                                            },
+                                            {
+                                                name: '과 (Family)',
+                                                value: '돌고래과 (Delphinidae)', // Oceanic Dolphins
+                                                children: [
+                                                    { name: '속 (Genus)', value: '돌고래속 (Delphinus)', children: [{ name: '종 (Species)', value: '참돌고래 (Delphinus delphis)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '범고래속 (Orcinus)', children: [{ name: '종 (Species)', value: '범고래 (Orcinus orca)', children: [] }] },
+                                                    { name: '속 (Genus)', value: '큰돌고래속 (Tursiops)', children: [{ name: '종 (Species)', value: '큰돌고래 (Tursiops truncatus)', children: [] }] }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '박쥐목 (Chiroptera)', // Bats
+                                        children: [
+                                            {
+                                                name: '과 (Family)',
+                                                value: '큰박쥐과 (Pteropodidae)', // Fruit Bats
+                                                children: [
+                                                    { name: '속 (Genus)', value: '과일박쥐속 (Pteropus)', children: [{ name: '종 (Species)', value: '인도날여우박쥐 (Pteropus giganteus)', children: [] }] }
+                                                ]
+                                            },
+                                            {
+                                                name: '과 (Family)',
+                                                value: '애기박쥐과 (Vespertilionidae)', // Common Bats
+                                                children: [
+                                                    { name: '속 (Genus)', value: '관박쥐속 (Rhinolophus)', children: [{ name: '종 (Species)', value: '관박쥐 (Rhinolophus ferrumequinum)', children: [] }] }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '조강 (Aves)', // Birds
+                                children: [
+                                    {
+                                        name: '목 (Order)',
+                                        value: '참새목 (Passeriformes)', // Passerines (Perching Birds)
+                                        children: [
+                                            { name: '과 (Family)', value: '참새과 (Passeridae)', children: [{ name: '종 (Species)', value: '참새 (Passer montanus)', children: [] }] },
+                                            { name: '과 (Family)', value: '까마귀과 (Corvidae)', children: [{ name: '종 (Species)', value: '까마귀 (Corvus corax)', children: [] }, { name: '종 (Species)', value: '까치 (Pica pica)', children: [] }] },
+                                            { name: '과 (Family)', value: '박새과 (Paridae)', children: [{ name: '종 (Species)', value: '박새 (Parus major)', children: [] }, { name: '종 (Species)', value: '곤줄박이 (Poecile varius)', children: [] }] }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '매목 (Falconiformes)', // Falcons
+                                        children: [
+                                            { name: '과 (Family)', value: '매과 (Falconidae)', children: [{ name: '종 (Species)', value: '매 (Falco peregrinus)', children: [] }, { name: '종 (Species)', value: '황조롱이 (Falco tinnunculus)', children: [] }] }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '닭목 (Galliformes)', // Fowl
+                                        children: [
+                                            { name: '과 (Family)', value: '꿩과 (Phasianidae)', children: [{ name: '종 (Species)', value: '닭 (Gallus gallus domesticus)', children: [] }, { name: '종 (Species)', value: '꿩 (Phasianus colchicus)', children: [] }] }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '펭귄목 (Sphenisciformes)', // Penguins
+                                        children: [
+                                            { name: '과 (Family)', value: '펭귄과 (Spheniscidae)', children: [{ name: '종 (Species)', value: '황제펭귄 (Aptenodytes forsteri)', children: [] }, { name: '종 (Species)', value: '아델리펭귄 (Pygoscelis adeliae)', children: [] }] }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '파충강 (Reptilia)', // Reptiles
+                                children: [
+                                    {
+                                        name: '목 (Order)',
+                                        value: '뱀목 (Squamata)', // Lizards and Snakes
+                                        children: [
+                                            { name: '과 (Family)', value: '도마뱀과 (Gekkonidae)', children: [{ name: '종 (Species)', value: '붙이류 (Gekko gecko)', children: [] }, { name: '종 (Species)', value: '레오파드게코 (Eublepharis macularius)', children: [] }] },
+                                            { name: '과 (Family)', value: '코브라과 (Elapidae)', children: [{ name: '종 (Species)', value: '킹코브라 (Ophiophagus hannah)', children: [] }, { name: '종 (Species)', value: '검은맘바 (Dendroaspis polylepis)', children: [] }] },
+                                            { name: '과 (Family)', value: '살모사과 (Viperidae)', children: [{ name: '종 (Species)', value: '살모사 (Gloydius blomhoffii)', children: [] }, { name: '종 (Species)', value: '방울뱀 (Crotalus horridus)', children: [] }] }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '거북목 (Testudines)', // Turtles and Tortoises
+                                        children: [
+                                            { name: '과 (Family)', value: '바다거북과 (Cheloniidae)', children: [{ name: '종 (Species)', value: '푸른바다거북 (Chelonia mydas)', children: [] }, { name: '종 (Species)', value: '붉은바다거북 (Caretta caretta)', children: [] }] },
+                                            { name: '과 (Family)', value: '자라과 (Trionychidae)', children: [{ name: '종 (Species)', value: '자라 (Pelodiscus sinensis)', children: [] }] }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '악어목 (Crocodilia)', // Crocodiles and Alligators
+                                        children: [
+                                            { name: '과 (Family)', value: '앨리게이터과 (Alligatoridae)', children: [{ name: '종 (Species)', value: '미시시피악어 (Alligator mississippiensis)', children: [] }] },
+                                            { name: '과 (Family)', value: '악어과 (Crocodylidae)', children: [{ name: '종 (Species)', value: '나일악어 (Crocodylus niloticus)', children: [] }] }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '양서강 (Amphibia)', // Amphibians
+                                children: [
+                                    {
+                                        name: '목 (Order)',
+                                        value: '개구리목 (Anura)', // Frogs and Toads
+                                        children: [
+                                            { name: '과 (Family)', value: '개구리과 (Ranidae)', children: [{ name: '종 (Species)', value: '참개구리 (Pelophylax nigromaculatus)', children: [] }, { name: '종 (Species)', value: '황소개구리 (Lithobates catesbeianus)', children: [] }] },
+                                            { name: '과 (Family)', value: '두꺼비과 (Bufonidae)', children: [{ name: '종 (Species)', value: '두꺼비 (Bufo bufo)', children: [] }, { name: '종 (Species)', value: '아시아두꺼비 (Duttaphrynus melanostictus)', children: [] }] }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '도롱뇽목 (Caudata)', // Salamanders and Newts
+                                        children: [
+                                            { name: '과 (Family)', value: '도롱뇽과 (Hynobiidae)', children: [{ name: '종 (Species)', value: '도롱뇽 (Hynobius leechii)', children: [] }] },
+                                            { name: '과 (Family)', value: '무족영원과 (Ambystomatidae)', children: [{ name: '종 (Species)', value: '아홀로틀 (Ambystoma mexicanum)', children: [] }] }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '어강 (Pisces)', // Fish (simplified, represents bony fish and cartilaginous fish)
+                                children: [
+                                    {
+                                        name: '목 (Order)',
+                                        value: '잉어목 (Cypriniformes)', // Carp-like fish
+                                        children: [
+                                            { name: '과 (Family)', value: '잉어과 (Cyprinidae)', children: [{ name: '종 (Species)', value: '잉어 (Cyprinus carpio)', children: [] }, { name: '종 (Species)', value: '붕어 (Carassius auratus)', children: [] }] }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '연어목 (Salmoniformes)', // Salmon-like fish
+                                        children: [
+                                            { name: '과 (Family)', value: '연어과 (Salmonidae)', children: [{ name: '종 (Species)', value: '연어 (Salmo salar)', children: [] }, { name: '종 (Species)', value: '송어 (Oncorhynchus mykiss)', children: [] }] }
+                                        ]
+                                    },
+                                    {
+                                        name: '목 (Order)',
+                                        value: '상어목 (Carcharhiniformes)', // Ground Sharks
+                                        children: [
+                                            { name: '과 (Family)', value: '흉상어과 (Carcharhinidae)', children: [{ name: '종 (Species)', value: '백상아리 (Carcharodon carcharias)', children: [] }, { name: '종 (Species)', value: '귀상어 (Sphyrna mokarran)', children: [] }] }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: '문 (Phylum)',
+                        value: '절지동물문 (Arthropoda)', // Arthropods - Insects, Arachnids, Crustaceans, Myriapods
+                        children: [
+                            {
+                                name: '강 (Class)',
+                                value: '곤충강 (Insecta)', // Insects
+                                children: [
+                                    { name: '목 (Order)', value: '나비목 (Lepidoptera)', children: [{ name: '종 (Species)', value: '호랑나비 (Papilio xuthus)', children: [] }, { name: '종 (Species)', value: '제비나비 (Papilio maackii)', children: [] }, { name: '종 (Species)', value: '배추흰나비 (Pieris rapae)', children: [] }] },
+                                    { name: '목 (Order)', value: '딱정벌레목 (Coleoptera)', children: [{ name: '종 (Species)', value: '장수풍뎅이 (Allomyrina dichotoma)', children: [] }, { name: '종 (Species)', value: '사슴벌레 (Lucanus maculifemoratus)', children: [] }, { name: '종 (Species)', value: '무당벌레 (Coccinella septempunctata)', children: [] }] },
+                                    { name: '목 (Order)', value: '벌목 (Hymenoptera)', children: [{ name: '종 (Species)', value: '꿀벌 (Apis mellifera)', children: [] }, { name: '종 (Species)', value: '말벌 (Vespa mandarinia)', children: [] }, { name: '종 (Species)', value: '개미 (Formica rufa)', children: [] }] },
+                                    { name: '목 (Order)', value: '파리목 (Diptera)', children: [{ name: '종 (Species)', value: '집파리 (Musca domestica)', children: [] }, { name: '종 (Species)', value: '모기 (Culex pipiens)', children: [] }] }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '거미강 (Arachnida)', // Arachnids (Spiders, Scorpions, Ticks, Mites)
+                                children: [
+                                    { name: '목 (Order)', value: '거미목 (Araneae)', children: [{ name: '종 (Species)', value: '무당거미 (Nephila clavata)', children: [] }, { name: '종 (Species)', value: '타란툴라 (Theraphosidae)', children: [] }] },
+                                    { name: '목 (Order)', value: '전갈목 (Scorpiones)', children: [{ name: '종 (Species)', value: '황제전갈 (Pandinus imperator)', children: [] }] },
+                                    { name: '목 (Order)', value: '진드기목 (Acari)', children: [{ name: '종 (Species)', value: '참진드기 (Ixodes ricinus)', children: [] }] }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '갑각강 (Crustacea)', // Crustaceans (Crabs, Lobsters, Shrimp, Barnacles, Isopods)
+                                children: [
+                                    { name: '목 (Order)', value: '십각목 (Decapoda)', children: [{ name: '종 (Species)', value: '꽃게 (Portunus trituberculatus)', children: [] }, { name: '종 (Species)', value: '대게 (Chionoecetes opilio)', children: [] }, { name: '종 (Species)', value: '새우 (Penaeus monodon)', children: [] }] },
+                                    { name: '목 (Order)', value: '등각목 (Isopoda)', children: [{ name: '종 (Species)', value: '쥐며느리 (Porcellionides pruinosus)', children: [] }] },
+                                    { name: '목 (Order)', value: '만각목 (Cirripedia)', children: [{ name: '종 (Species)', value: '따개비 (Balanus balanoides)', children: [] }] }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: '문 (Phylum)',
+                        value: '연체동물문 (Mollusca)', // Molluscs - Snails, Slugs, Clams, Oysters, Octopuses, Squids
+                        children: [
+                            {
+                                name: '강 (Class)',
+                                value: '두족강 (Cephalopoda)', // Cephalopods (Octopus, Squid, Cuttlefish, Nautilus)
+                                children: [
+                                    { name: '목 (Order)', value: '문어목 (Octopoda)', children: [{ name: '종 (Species)', value: '참문어 (Octopus vulgaris)', children: [] }, { name: '종 (Species)', value: '대문어 (Enteroctopus dofleini)', children: [] }] },
+                                    { name: '목 (Order)', value: '오징어목 (Teuthida)', children: [{ name: '종 (Species)', value: '살오징어 (Todarodes pacificus)', children: [] }, { name: '종 (Species)', value: '대왕오징어 (Architeuthis dux)', children: [] }] },
+                                    { name: '목 (Order)', value: '갑오징어목 (Sepiida)', children: [{ name: '종 (Species)', value: '갑오징어 (Sepia esculenta)', children: [] }] }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '복족강 (Gastropoda)', // Gastropods (Snails, Slugs)
+                                children: [
+                                    { name: '목 (Order)', value: '달팽이목 (Stylommatophora)', children: [{ name: '종 (Species)', value: '명주달팽이 (Bradybaena pellucida)', children: [] }, { name: '종 (Species)', value: '민달팽이 (Limax maximus)', children: [] }] },
+                                    { name: '목 (Order)', value: '군소목 (Anaspidea)', children: [{ name: '종 (Species)', value: '군소 (Aplysia kurodai)', children: [] }] }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '이매패강 (Bivalvia)', // Bivalves (Clams, Oysters, Mussels, Scallops)
+                                children: [
+                                    { name: '목 (Order)', value: '돌조개목 (Arcida)', children: [{ name: '종 (Species)', value: '피조개 (Anadara broughtonii)', children: [] }] },
+                                    { name: '목 (Order)', value: '홍합목 (Mytilida)', children: [{ name: '종 (Species)', value: '홍합 (Mytilus edulis)', children: [] }] },
+                                    { name: '목 (Order)', value: '굴목 (Ostreida)', children: [{ name: '종 (Species)', value: '참굴 (Crassostrea gigas)', children: [] }] }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: '문 (Phylum)',
+                        value: '극피동물문 (Echinodermata)', // Echinoderms - Starfish, Sea Urchins, Sea Cucumbers
+                        children: [
+                            {
+                                name: '강 (Class)',
+                                value: '불가사리강 (Asteroidea)', // Starfish
+                                children: [
+                                    { name: '목 (Order)', value: '불가사리목 (Forcipulatida)', children: [{ name: '종 (Species)', value: '아무르불가사리 (Asterias amurensis)', children: [] }, { name: '종 (Species)', value: '별불가사리 (Asterina pectinifera)', children: [] }] }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '성게강 (Echinoidea)', // Sea Urchins
+                                children: [
+                                    { name: '목 (Order)', value: '성게목 (Echinoida)', children: [{ name: '종 (Species)', value: '보라성게 (Hemicentrotus pulcherrimus)', children: [] }, { name: '종 (Species)', value: '말똥성게 (Strongylocentrotus nudus)', children: [] }] }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '해삼강 (Holothuroidea)', // Sea Cucumbers
+                                children: [
+                                    { name: '목 (Order)', value: '해삼목 (Aspidochirotida)', children: [{ name: '종 (Species)', value: '해삼 (Stichopus japonicus)', children: [] }] }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: '문 (Phylum)',
+                        value: '해면동물문 (Porifera)', // Sponges
+                        children: [
+                            {
+                                name: '강 (Class)',
+                                value: '보통해면강 (Demospongiae)', // Demosponges
+                                children: [
+                                    { name: '목 (Order)', value: '해면목 (Dictyoceratida)', children: [{ name: '종 (Species)', value: '목욕해면 (Spongia officinalis)', children: [] }] },
+                                    { name: '목 (Order)', value: '돌해면목 (Lithistida)', children: [{ name: '종 (Species)', value: '돌해면 (Corallistes undulatus)', children: [] }] }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: '문 (Phylum)',
+                        value: '자포동물문 (Cnidaria)', // Cnidarians - Jellyfish, Corals, Sea Anemones
+                        children: [
+                            {
+                                name: '강 (Class)',
+                                value: '해파리강 (Scyphozoa)', // Jellyfish
+                                children: [
+                                    { name: '목 (Order)', value: '기구해파리목 (Rhizostomeae)', children: [{ name: '종 (Species)', value: '보름달물해파리 (Aurelia aurita)', children: [] }] }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '산호충강 (Anthozoa)', // Corals and Sea Anemones
+                                children: [
+                                    { name: '목 (Order)', value: '돌산호목 (Scleractinia)', children: [{ name: '종 (Species)', value: '사슴뿔산호 (Acropora cervicornis)', children: [] }] },
+                                    { name: '목 (Order)', value: '말미잘목 (Actiniaria)', children: [{ name: '종 (Species)', value: '말미잘 (Actinia equina)', children: [] }] }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: '문 (Phylum)',
+                        value: '편형동물문 (Platyhelminthes)', // Flatworms - Planarians, Flukes, Tapeworms
+                        children: [
+                            {
+                                name: '강 (Class)',
+                                value: '와충강 (Turbellaria)', // Free-living Flatworms
+                                children: [
+                                    { name: '목 (Order)', value: '삼기장목 (Tricladida)', children: [{ name: '종 (Species)', value: '플라나리아 (Dugesia japonica)', children: [] }] }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        name: '문 (Phylum)',
+                        value: '환형동물문 (Annelida)', // Annelids - Segmented Worms (Earthworms, Leeches)
+                        children: [
+                            {
+                                name: '강 (Class)',
+                                value: '거머리강 (Hirudinea)', // Leeches
+                                children: [
+                                    { name: '목 (Order)', value: '무악거머리목 (Arhynchobdellida)', children: [{ name: '종 (Species)', value: '의료용거머리 (Hirudo medicinalis)', children: [] }] }
+                                ]
+                            },
+                            {
+                                name: '강 (Class)',
+                                value: '빈모강 (Oligochaeta)', // Earthworms
+                                children: [
+                                    { name: '목 (Order)', value: '지렁이목 (Haplotaxida)', children: [{ name: '종 (Species)', value: '지렁이 (Lumbricus terrestris)', children: [] }] }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // Function to create Lucide Icon SVG
+        function getLucideIcon(iconName, className) {
+            // Lucide icons are globally available via the CDN.
+            // We can dynamically create the SVG element.
+            // This is a simplified approach, for more complex usage,
+            // a dedicated library might be needed or more robust SVG generation.
+            if (typeof lucide === 'undefined' || !lucide.icons[iconName]) {
+                console.warn(`Lucide icon "${iconName}" not found. Using placeholder.`);
+                return `<span class="${className}"></span>`; // Return an empty span for alignment
+            }
+            const icon = lucide.icons[iconName];
+            const svgHtml = lucide.createIcons({
+                icons: { [iconName]: icon },
+                attrs: { class: className }
+            })[iconName];
+            return svgHtml;
+        }
+
+        // Recursive function to render classification items
+        function renderClassification(items, level = 0) {
+            let html = '';
+            items.forEach((item, index) => {
+                const isOpen = item.isOpen || false; // Default to closed
+                const paddingLeft = `${level * 20}px`;
+                const backgroundColor = `rgba(34, 139, 34, ${0.1 + level * 0.05})`; // Forest green shades
+                const textColorClass = level === 0 ? 'text-green-200' : 'text-green-300';
+                const valueColorClass = 'text-green-100';
+
+                let iconHtml = '';
+                if (item.children && item.children.length > 0) {
+                    iconHtml = isOpen ? getLucideIcon('chevron-down', 'w-5 h-5 mr-2 text-yellow-300') : getLucideIcon('chevron-right', 'w-5 h-5 mr-2 text-yellow-300');
+                } else {
+                    iconHtml = '<span class="w-5 h-5 mr-2 inline-block"></span>'; // Placeholder for alignment
+                }
+
+                html += `
+                    <div class="mb-2">
+                        <div
+                            class="flex items-center p-3 rounded-lg cursor-pointer transition-all duration-200 ease-in-out hover:bg-green-700"
+                            style="padding-left: ${paddingLeft}; background-color: ${backgroundColor};"
+                            data-index="${index}" data-level="${level}"
+                        >
+                            ${iconHtml}
+                            <span class="font-semibold text-lg ${textColorClass}">
+                                ${item.name}:
+                            </span>
+                            <span class="ml-2 text-base ${valueColorClass}">${item.value}</span>
+                        </div>
+                `;
+
+                if (isOpen && item.children && item.children.length > 0) {
+                    html += `<div class="mt-2">${renderClassification(item.children, level + 1)}</div>`;
+                }
+                html += `</div>`;
+            });
+            return html;
+        }
+
+        // Function to find and update item state
+        function updateItemState(items, path, newState) {
+            let current = items;
+            for (let i = 0; i < path.length; i++) {
+                const index = path[i];
+                if (i === path.length - 1) {
+                    current[index] = { ...current[index], ...newState };
+                } else {
+                    current = current[index].children;
+                }
+            }
+        }
+
+        // Event listener for toggling classification items
+        function setupToggleListeners() {
+            const mainContent = document.getElementById('main-content');
+            mainContent.addEventListener('click', (event) => {
+                const target = event.target.closest('[data-index][data-level]');
+                if (target) {
+                    const index = parseInt(target.dataset.index);
+                    const level = parseInt(target.dataset.level);
+
+                    // Reconstruct path to the clicked item
+                    let currentItems = animalClassification;
+                    let path = [];
+                    let foundItem = null;
+
+                    function findItemAndPath(items, targetIndex, targetLevel, currentPath, currentLevel) {
+                        if (!items) return null;
+                        for (let i = 0; i < items.length; i++) {
+                            if (currentLevel === targetLevel && i === targetIndex) {
+                                foundItem = items[i];
+                                path = [...currentPath, i];
+                                return foundItem;
+                            }
+                            if (items[i].children) {
+                                const result = findItemAndPath(items[i].children, targetIndex, targetLevel, [...currentPath, i], currentLevel + 1);
+                                if (result) return result;
+                            }
+                        }
+                        return null;
+                    }
+
+                    findItemAndPath(animalClassification, index, level, [], 0);
+
+                    if (foundItem) {
+                        foundItem.isOpen = !foundItem.isOpen; // Toggle the isOpen state
+                        renderAllClassification(); // Re-render the entire classification
+                    }
+                }
+            });
+        }
+
+        // Initial render of all classification items
+        function renderAllClassification() {
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = renderClassification(animalClassification);
+            // After rendering, Lucide icons need to be "created" if they are not already.
+            // This ensures the SVG is injected.
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        // On window load, render the classification and set up listeners
+        window.onload = () => {
+            renderAllClassification();
+            setupToggleListeners();
+        };
+    </script>
+</body>
+</html>
